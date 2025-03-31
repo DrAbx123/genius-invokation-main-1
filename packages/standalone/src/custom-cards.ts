@@ -14,8 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // 自定义卡牌模块
-import { 
-  registerCustomImage, 
+import {
+  registerCustomImage,
   registerMultipleCustomImages,
   hasCustomImage,
   getCustomImageUrl
@@ -84,7 +84,7 @@ export function registerCustomCardImages() {
 
     // 特技
     297010: "/custom-cards/UI_Gcg_CardFace_Summon_Silverwolf_Vehicle.png",
-    2970101: "/custom-cards/UI_Gcg_Buff_Vehicle_Silverwolf.png",
+    2970101: "/custom-cards/Skill_S_Silverwolf_02.png",
 
     // debuff
     97020: "/custom-cards/UI_Gcg_Buff_Silverwolf_E.png",
@@ -118,4 +118,4 @@ export function registerCustomCardImages() {
  * - 动态加载自定义卡牌配置
  * - 添加UI界面以管理自定义卡牌
  * - 实现更复杂的卡牌替换逻辑
- */ 
+ */
