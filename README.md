@@ -1,3 +1,8 @@
+# 这里是fork的仓库，原版请前往
+[这里]（https://github.com/genius-invokation/genius-invokation）
+
+
+
 <center>
 
 ![logo](./docs/images/logo.png)
@@ -58,5 +63,3 @@
 </tr>
 </tbody>
 </table>
-
-
