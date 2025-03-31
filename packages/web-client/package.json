@@ -1,0 +1,45 @@
+{
+  "name": "@gi-tcg/web-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "dev": "bunx --bun vite",
+    "build": "bunx --bun vite build",
+    "preview": "vite preview"
+  },
+  "browserslist": "defaults",
+  "dependencies": {
+    "@gi-tcg/deck-builder": "workspace:*",
+    "@gi-tcg/legacy-web-ui-core": "workspace:*",
+    "@gi-tcg/web-ui-core": "workspace:*",
+    "@server-sent-stream/web": "^1.0.3",
+    "@solid-primitives/storage": "^4.2.1",
+    "@solidjs/router": "^0.13.5",
+    "@una-ui/preset": "^0.34.0-beta.1",
+    "@unocss/reset": "^0.58.3",
+    "axios": "^1.7.2",
+    "core-js": "3.38.1",
+    "dayjs": "^1.11.13",
+    "solid-js": "^1.9.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/preset-env": "^7.24.4",
+    "@gi-tcg/config": "workspace:*",
+    "@gi-tcg/static-data": "workspace:*",
+    "@iconify-json/mdi": "^1.1.66",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@types/core-js": "^2.5.8",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@unocss/preset-icons": "^65.4.2",
+    "eslint": "^8.56.0",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-solid": "^0.13.1",
+    "unocss": "^65.4.2",
+    "vite": "^6.0.11",
+    "vite-plugin-solid": "^2.11.1"
+  }
+}
