@@ -1,7 +1,7 @@
 # 这里是fork的仓库，原版请前往
 [这里]（ https://github.com/genius-invokation/genius-invokation ）
 
-
+本仓库实现了自定义角色，但（非常）可能不经常维护。
 
 <center>
 

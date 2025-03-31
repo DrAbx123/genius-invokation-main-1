@@ -15,128 +15,135 @@
 
 import { blobToDataUrl } from "./data_url";
 
-// 存储自定义卡牌图像映射
-// 键: 卡牌ID(number)或cardFace字符串(string) 
-// 值: URL字符串或Blob对象
+// Store custom image mappings
+// Key: Card ID (number) or CardFace string
+// Value: URL or Blob of the custom image
 const customImages = new Map<number | string, string | Blob>();
 
 /**
- * 规范化URL路径
- * @param url 图片URL路径
- * @returns 规范化后的URL
+ * 确保URL是有效的图片路径
+ * @param url 图片URL字符串
+ * @returns 格式化后的URL
  */
-function normalizeUrl(url: string): string {
-  // 如果已经是绝对URL或数据URL，直接返回
+function normalizeImageUrl(url: string): string {
+  // 如果已经是绝对URL，直接返回
   if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
     return url;
   }
   
-  // 确保路径以斜杠开头
-  if (!url.startsWith('/')) {
-    url = '/' + url;
-  }
-  
-  // 在浏览器环境中，添加origin
+  // 如果是相对路径，添加baseUrl
+  // 注意：在浏览器环境中，window.location可用
   try {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    return baseUrl + url;
+    // 确保路径格式正确（避免双斜杠等问题）
+    if (url.startsWith('/')) {
+      return `${baseUrl}${url}`;
+    } else {
+      return `${baseUrl}/${url}`;
+    }
   } catch (e) {
+    console.error('无法获取baseUrl，使用原始URL', e);
     return url;
   }
 }
 
 /**
- * 根据ID注册自定义卡牌图像
- * @param id 卡牌ID
- * @param imageUrl 图片URL或Blob对象
+ * Register a custom image for a card by ID
+ * @param id The card ID
+ * @param imageData URL string or Blob of the custom image
  */
-export function registerCustomImage(id: number, imageUrl: string | Blob): void {
-  if (typeof imageUrl === 'string') {
-    imageUrl = normalizeUrl(imageUrl);
-  }
-  customImages.set(id, imageUrl);
-}
-
-/**
- * 根据cardFace注册自定义卡牌图像
- * @param cardFace 卡牌face标识符
- * @param imageUrl 图片URL或Blob对象
- */
-export function registerCustomImageByFace(cardFace: string, imageUrl: string | Blob): void {
-  if (typeof imageUrl === 'string') {
-    imageUrl = normalizeUrl(imageUrl);
-  }
-  customImages.set(cardFace, imageUrl);
-}
-
-/**
- * 批量注册自定义卡牌图像
- * @param images 卡牌ID/cardFace到图片URL的映射
- */
-export function registerMultipleCustomImages(images: Record<string | number, string | Blob>): void {
-  for (const [key, value] of Object.entries(images)) {
-    const numKey = Number(key);
-    if (!isNaN(numKey)) {
-      registerCustomImage(numKey, value);
-    } else {
-      registerCustomImageByFace(key, value);
-    }
-  }
-}
-
-/**
- * 根据ID获取自定义卡牌图像URL
- * @param id 卡牌ID
- * @returns 图片URL字符串，如果没有找到返回null
- */
-export async function getCustomImageUrl(id: number): Promise<string | null> {
-  const image = customImages.get(id);
-  if (!image) return null;
+export function registerCustomImageById(id: number, imageData: string | Blob): void {
+  console.log(`[Custom Images] 注册ID: ${id}`);
   
-  if (typeof image === 'string') {
-    return image;
-  } else {
-    return await blobToDataUrl(image);
+  // 如果是URL，标准化处理
+  if (typeof imageData === 'string') {
+    imageData = normalizeImageUrl(imageData);
   }
-}
-
-/**
- * 根据cardFace获取自定义卡牌图像URL
- * @param cardFace 卡牌face标识符
- * @returns 图片URL字符串，如果没有找到返回null
- */
-export async function getCustomImageUrlByFace(cardFace: string): Promise<string | null> {
-  const image = customImages.get(cardFace);
-  if (!image) return null;
   
-  if (typeof image === 'string') {
-    return image;
+  customImages.set(id, imageData);
+}
+
+/**
+ * Register a custom image for a card by cardFace
+ * @param cardFace The cardFace identifier (e.g., "UI_Gcg_CardFace_Character_SomeCustomCard")
+ * @param imageData URL string or Blob of the custom image
+ */
+export function registerCustomImageByCardFace(cardFace: string, imageData: string | Blob): void {
+  console.log(`[Custom Images] 注册CardFace: ${cardFace}`);
+  
+  // 如果是URL，标准化处理
+  if (typeof imageData === 'string') {
+    imageData = normalizeImageUrl(imageData);
+  }
+  
+  customImages.set(cardFace, imageData);
+}
+
+/**
+ * Get a custom image URL by card ID
+ * @param id The card ID
+ * @returns Data URL of the custom image, or null if no custom image is registered
+ */
+export async function getCustomImageUrlById(id: number): Promise<string | null> {
+  const customImage = customImages.get(id);
+  console.log(`[Custom Images] 查询ID: ${id}`, customImage ? "找到自定义图片" : "未找到自定义图片");
+  
+  if (!customImage) return null;
+
+  if (typeof customImage === 'string') {
+    // 确保URL是规范的
+    return normalizeImageUrl(customImage);
   } else {
-    return await blobToDataUrl(image);
+    return blobToDataUrl(customImage);
   }
 }
 
 /**
- * 清除所有自定义卡牌图像
+ * Get a custom image URL by cardFace
+ * @param cardFace The cardFace identifier
+ * @returns Data URL of the custom image, or null if no custom image is registered
+ */
+export async function getCustomImageUrlByCardFace(cardFace: string): Promise<string | null> {
+  const customImage = customImages.get(cardFace);
+  console.log(`[Custom Images] 查询CardFace: ${cardFace}`, customImage ? "找到自定义图片" : "未找到自定义图片");
+  
+  if (!customImage) return null;
+
+  if (typeof customImage === 'string') {
+    // 确保URL是规范的
+    return normalizeImageUrl(customImage);
+  } else {
+    return blobToDataUrl(customImage);
+  }
+}
+
+/**
+ * Clear all registered custom images
  */
 export function clearCustomImages(): void {
+  console.log(`[Custom Images] 清空所有自定义图片`);
   customImages.clear();
 }
 
 /**
- * 检查是否有指定ID的自定义卡牌图像
- * @param id 卡牌ID
- * @returns 是否存在对应的自定义图像
+ * Batch register multiple custom images
+ * @param images Object mapping card IDs or cardFaces to image data
  */
-export function hasCustomImage(id: number): boolean {
-  return customImages.has(id);
+export function registerMultipleCustomImages(
+  images: Record<string | number, string | Blob>
+): void {
+  console.log(`[Custom Images] 批量注册 ${Object.keys(images).length} 个自定义图片`);
+  for (const [key, value] of Object.entries(images)) {
+    const numKey = Number(key);
+    if (!isNaN(numKey)) {
+      registerCustomImageById(numKey, value);
+    } else {
+      registerCustomImageByCardFace(key, value);
+    }
+  }
 }
 
-/**
- * 检查是否有指定cardFace的自定义卡牌图像
- * @param cardFace 卡牌face标识符
- * @returns 是否存在对应的自定义图像
- */
-export function hasCustomImageByFace(cardFace: string): boolean {
-  return customImages.has(cardFace);
-} 
+// 导出当前映射以供调试
+export function _getCustomImagesMap(): Map<number | string, string | Blob> {
+  return customImages;
+}
